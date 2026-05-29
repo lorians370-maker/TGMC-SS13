@@ -10327,10 +10327,6 @@
 	dir = 4
 	},
 /area/orion_outpost/surface/building/prep)
-"Uh" = (
-/obj/effect/landmark/xeno_spawner_spawn,
-/turf/open/floor/plating/ground/mars/random/cave/darker,
-/area/orion_outpost/ground/underground/caveN)
 "Uk" = (
 /turf/open/floor/plating/ground/concrete/lines{
 	dir = 10
@@ -33158,7 +33154,7 @@ Lb
 Lb
 Lb
 Lb
-Uh
+Lb
 Lb
 Lb
 Lb
