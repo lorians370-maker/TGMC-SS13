@@ -163,6 +163,12 @@
 
 	if(isvehicle(crosser))
 		var/obj/vehicle/vehicle = crosser
+		if(istype(vehicle, /obj/vehicle/unmanned))
+			var/obj/vehicle/unmanned/unmanned_vehicle = vehicle
+			if(!unmanned_vehicle.affected_by_sticky_weeds)
+				return
+			unmanned_vehicle.weed_slowdown += WEED_SLOWDOWN
+			return
 		COOLDOWN_INCREMENT(vehicle, cooldown_vehicle_move, slow_amount)
 		vehicle.last_move_time += WEED_SLOWDOWN
 		return
@@ -345,6 +351,12 @@
 
 	if(isvehicle(crosser))
 		var/obj/vehicle/vehicle = crosser
+		if(istype(vehicle, /obj/vehicle/unmanned))
+			var/obj/vehicle/unmanned/unmanned_vehicle = vehicle
+			if(!unmanned_vehicle.affected_by_sticky_weeds)
+				return
+			unmanned_vehicle.weed_slowdown += WEED_SLOWDOWN
+			return
 		vehicle.last_move_time += WEED_SLOWDOWN
 		return
 
