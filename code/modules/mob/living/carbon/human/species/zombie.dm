@@ -76,10 +76,21 @@
 	H.update_health()
 
 /datum/species/zombie/handle_death(mob/living/carbon/human/H)
-	if(H.on_fire || !H.has_working_organs())
+	if(H.on_fire)
+		addtimer(CALLBACK(src, PROC_REF(fade_out_and_qdel_in), H), 1 MINUTES)
+		return
+	if(!H.has_working_organs())
+		SSmobs.stop_processing(H)
 		addtimer(CALLBACK(src, PROC_REF(fade_out_and_qdel_in), H), 1 MINUTES)
 		return
 	addtimer(CALLBACK(H, TYPE_PROC_REF(/mob/living/carbon/human, revive_to_crit), TRUE, FALSE), revive_time)
+
+/datum/species/zombie/can_revive_to_crit(mob/living/carbon/human/H)
+	if(H.on_fire || !H.has_working_organs() || isspaceturf(get_turf(H)))
+		SSmobs.stop_processing(H)
+		addtimer(CALLBACK(src, PROC_REF(fade_out_and_qdel_in), H), 20 SECONDS)
+		return FALSE
+	return TRUE
 
 /// We start fading out the human and qdel them in set time
 /datum/species/zombie/proc/fade_out_and_qdel_in(mob/living/carbon/human/H, time = 5 SECONDS)

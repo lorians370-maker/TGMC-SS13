@@ -711,3 +711,11 @@ GLOBAL_LIST_INIT(acid_spray_hit, typecacheof(list(/obj/structure/barricade, /obj
 	layer = BELOW_MOB_LAYER
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 	appearance_flags = APPEARANCE_UI_IGNORE_ALPHA | KEEP_APART
+
+/obj/effect/xeno/abduct_warning
+	icon = 'icons/Xeno/Effects.dmi'
+	icon_state = "abduct_hook"
+
+/obj/effect/xeno/abduct_warning/Initialize(mapload)
+	. = ..()
+	notify_ai_hazard()

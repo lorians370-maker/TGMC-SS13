@@ -63,6 +63,8 @@
 #define ARMORED_WRECKABLE (1<<9)
 ///Is currently a wreck
 #define ARMORED_IS_WRECK (1<<10)
+///Vehicles with this flag hurt themselves when ramming walls
+#define ARMORED_SELF_WALL_DAMAGE (1<<13)
 
 #define MODULE_PRIMARY (1<<0)
 #define MODULE_SECONDARY (1<<1)

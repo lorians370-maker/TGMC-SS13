@@ -116,6 +116,10 @@
 	///The strength of our aura. Zero means we can't emit any.
 	var/aura_strength = 0
 
+	// *** Puppeteer Abilities *** //
+	var/flay_plasma_gain = 0
+	var/max_puppets = 0
+
 	// *** Defiler Abilities *** //
 	var/list/available_reagents_define = list() //reagents available for select reagent
 
@@ -442,4 +446,3 @@ GLOBAL_LIST_INIT(strain_list, init_glob_strain_list())
 	COOLDOWN_DECLARE(xeno_resting_cooldown)
 	///The unresting cooldown
 	COOLDOWN_DECLARE(xeno_unresting_cooldown)
-

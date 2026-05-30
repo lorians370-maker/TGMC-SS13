@@ -3,6 +3,7 @@
 	name = "Dragon"
 	desc = "A massive, ancient beast with scales that shimmer like polished armor. The fiercest and most formidable creature."
 	icon = 'icons/Xeno/castes/dragon/dragon.dmi'
+	effects_icon = 'icons/Xeno/castes/dragon/dragon.dmi' // Позже закинуть в отдельный .dmi
 	icon_state = "Dragon Walking"
 	attacktext = "bites"
 	friendly = "nuzzles"

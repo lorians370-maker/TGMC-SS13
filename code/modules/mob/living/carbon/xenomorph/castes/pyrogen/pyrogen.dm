@@ -3,6 +3,7 @@
 	name = "Pyrogen"
 	desc = "A skittish alien, it burns with fury."
 	icon = 'icons/Xeno/castes/pyrogen/pyrogen.dmi'
+	effects_icon = 'icons/Xeno/castes/pyrogen/pyrogen.dmi' // Позже закинуть в отдельный .dmi
 	icon_state = "pyrogen Walking"
 	health = 325
 	maxHealth = 325

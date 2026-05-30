@@ -184,8 +184,8 @@
 		create_object(usr, recipe, multiplier)
 
 /// Creates multiplier amount of objects based off oт stack recipe. Most creation variables are changed through stack recipe datum's variables
-/obj/item/stack/proc/create_object(mob/user, datum/stack_recipe/recipe, multiplier)
-	if(user.get_active_held_item() != src)
+/obj/item/stack/proc/create_object(mob/user, datum/stack_recipe/recipe, multiplier, turf/build_loc, build_dir, ignore_stack_loc = FALSE)
+	if(!ignore_stack_loc && user.get_active_held_item() != src)
 		return
 	if(!can_interact(user))
 		return TRUE
@@ -205,18 +205,22 @@
 		if(!building_checks(user, recipe, multiplier))
 			return
 
+	if(!build_loc)
+		build_loc = get_turf(user)
+	if(!build_dir)
+		build_dir = user.dir
 	var/obj/object
 	if(recipe.max_res_amount > 1) //Is it a stack?
-		object = new recipe.result_type(get_turf(user), recipe.res_amount * multiplier)
+		object = new recipe.result_type(build_loc, recipe.res_amount * multiplier)
 	else if(ispath(recipe.result_type, /turf))
-		var/turf/our_turf = get_turf(user)
+		var/turf/our_turf = build_loc
 		if(!isturf(our_turf))
 			return
 		our_turf.PlaceOnTop(recipe.result_type)
 	else
-		object = new recipe.result_type(get_turf(user))
+		object = new recipe.result_type(build_loc)
 	if(object)
-		object.setDir(user.dir)
+		object.setDir(build_dir)
 		object.color = color
 	use(recipe.req_amount * multiplier)
 

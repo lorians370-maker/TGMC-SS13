@@ -61,6 +61,7 @@
 #define AMMO_FLAME (1<<9)
 ///Used to identify ammo that have intrinsec IFF properties
 #define AMMO_IFF (1<<10)
+#define GUN_IFF AMMO_IFF
 ///If the projectile from this ammo is hitscan
 #define AMMO_HITSCAN (1<<11)
 ///If the projectile does something with on_leave_turf()

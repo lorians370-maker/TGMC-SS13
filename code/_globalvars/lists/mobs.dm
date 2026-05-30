@@ -123,6 +123,8 @@ GLOBAL_LIST_INIT(all_xeno_types, list(
 	/mob/living/carbon/xenomorph/spiderling,
 	/mob/living/carbon/xenomorph/pyrogen,
 	/mob/living/carbon/xenomorph/pyrogen/primordial,
+	/mob/living/carbon/xenomorph/puppeteer,
+	/mob/living/carbon/xenomorph/puppeteer/primordial,
 	/mob/living/carbon/xenomorph/baneling,
 	/mob/living/carbon/xenomorph/dragon,
 	/mob/living/carbon/xenomorph/dragon/primordial,
@@ -146,6 +148,7 @@ GLOBAL_LIST_INIT(xeno_types_tier_two, list(
 	/datum/xeno_caste/hivelord,
 	/datum/xeno_caste/hunter,
 	/datum/xeno_caste/panther,
+	/datum/xeno_caste/puppeteer,
 	/datum/xeno_caste/spitter,
 	/datum/xeno_caste/warrior,
 ))
