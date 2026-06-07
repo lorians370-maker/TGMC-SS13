@@ -115,7 +115,7 @@
 
 /datum/supply_packs/explosives/detpack
 	name = "Detpack explosive"
-	contains = list(/obj/item/detpack)
+	contains = list(/obj/item/explosive/plastique/detpack)
 	cost = 50
 
 /datum/supply_packs/explosives/mortar

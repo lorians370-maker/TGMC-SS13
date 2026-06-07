@@ -43,7 +43,7 @@
 /obj/item/explosive/plastique/afterattack(atom/target, mob/user, flag)
 	if(!flag)
 		return FALSE
-	if(istype(target, /obj/item) || isopenturf(target))
+	if(istype(target, /obj/item))
 		return FALSE
 	if(target.resistance_flags & INDESTRUCTIBLE)
 		return FALSE
@@ -54,18 +54,10 @@
 			to_chat(user, "[span_warning("[W] is much too tough for you to do anything to it with [src]")].")
 			return FALSE
 
-	if((locate(/obj/item/detpack) in target) || (locate(/obj/item/explosive/plastique) in target)) //This needs a refactor.
-		to_chat(user, "[span_warning("There is already a device attached to [target]")].")
-		return FALSE
-
 	user.visible_message(span_warning("[user] is trying to plant [name] on [target]!"),
 	span_warning("You are trying to plant [name] on [target]!"))
 
 	if(!do_after(user, 2 SECONDS, NONE, target, BUSY_ICON_HOSTILE))
-		return
-
-	if((locate(/obj/item/detpack) in target) || (locate(/obj/item/explosive/plastique) in target)) //This needs a refactor.
-		to_chat(user, "[span_warning("There is already a device attached to [target]")].")
 		return
 
 	user.drop_held_item()
@@ -241,3 +233,12 @@
 ///Allows the c4 timer to be tweaked on certain atoms as required
 /atom/proc/plastique_time_mod(time)
 	return time
+
+
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+
+/obj/item/explosive/plastique/trench
+	name = "trench charge"
+	icon_state = "trench_charge"
+

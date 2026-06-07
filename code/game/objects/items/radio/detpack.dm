@@ -1,4 +1,4 @@
-/obj/item/detpack
+/obj/item/explosive/plastique/detpack
 	name = "detonation pack"
 	desc = "Programmable remotely triggered 'smart' explosive controlled via a signaler, used for demolitions and impromptu booby traps. Can be set to breach or demolition detonation patterns."
 	gender = PLURAL
@@ -14,27 +14,22 @@
 	layer = MOB_LAYER - 0.1
 	var/frequency = 1457
 	var/on = FALSE
-	var/armed = FALSE
-	var/timer = 5
 	var/code = 2
 	///FALSE for breach, TRUE for demolition.
 	var/det_mode = FALSE
-	///which atom the detpack is planted on
-	var/atom/plant_target = null
 	///store this for restoration later
 	var/target_drag_delay = null
 	///confirms whether we actually detted.
 	var/boom = FALSE
-	var/detonation_pending
 	var/sound_timer
 	var/datum/radio_frequency/radio_connection
 
-/obj/item/detpack/Initialize(mapload)
+/obj/item/explosive/plastique/detpack/Initialize(mapload)
 	. = ..()
 	set_frequency(frequency)
 	code = rand(1, 100)
 
-/obj/item/detpack/examine(mob/user)
+/obj/item/explosive/plastique/detpack/examine(mob/user)
 	. = ..()
 	. += span_info("<b>Unique-Action</b> (Space by default) to arm.")
 	. += span_info("<b>LMB</b> it with a signaler to copy over the signal code.")
@@ -50,7 +45,7 @@
 	if(armed)
 		. += span_warning("<b>It is armed!</b>")
 
-/obj/item/detpack/Destroy()
+/obj/item/explosive/plastique/detpack/Destroy()
 	if(sound_timer)
 		deltimer(sound_timer)
 		sound_timer = null
@@ -64,15 +59,15 @@
 		nullvars()
 	return ..()
 
-/obj/item/detpack/ex_act()
+/obj/item/explosive/plastique/detpack/ex_act()
 	return
 
-/obj/item/detpack/proc/set_frequency(new_frequency)
+/obj/item/explosive/plastique/detpack/proc/set_frequency(new_frequency)
 	SSradio.remove_object(src, frequency)
 	frequency = new_frequency
 	radio_connection = SSradio.add_object(src, frequency, RADIO_SIGNALER)
 
-/obj/item/detpack/update_icon_state()
+/obj/item/explosive/plastique/detpack/update_icon_state()
 	. = ..()
 	icon_state = "detpack_[plant_target ? "set_" : ""]"
 	if(on)
@@ -80,7 +75,7 @@
 	else
 		icon_state = "[icon_state]off"
 
-/obj/item/detpack/attackby(obj/item/I, mob/user, params)
+/obj/item/explosive/plastique/detpack/attackby(obj/item/I, mob/user, params)
 	. = ..()
 	if(.)
 		return
@@ -90,12 +85,12 @@
 		set_frequency(signaler.frequency)
 		balloon_alert(user, "Frequency copied over")
 
-/obj/item/detpack/unique_action(mob/user, special_treatment)
+/obj/item/explosive/plastique/detpack/unique_action(mob/user, special_treatment)
 	. = ..()
 	on = !on
 	update_icon()
 
-/obj/item/detpack/attack_hand(mob/living/user)
+/obj/item/explosive/plastique/detpack/attack_hand(mob/living/user)
 	if(armed)
 		balloon_alert(user, "Disarm it first!")
 		return
@@ -109,7 +104,7 @@
 		nullvars()
 	return ..()
 
-/obj/item/detpack/multitool_act(mob/living/user, obj/item/I)
+/obj/item/explosive/plastique/detpack/multitool_act(mob/living/user, obj/item/I)
 	if(!armed && !on)
 		balloon_alert(user, "Inactive")
 		return
@@ -133,7 +128,7 @@
 	balloon_alert_to_viewers("Disarmed")
 	disarm()
 
-/obj/item/detpack/proc/nullvars()
+/obj/item/explosive/plastique/detpack/proc/nullvars()
 	if(ismovableatom(plant_target) && plant_target.loc)
 		var/atom/movable/T = plant_target
 		if(T.drag_delay == 3)
@@ -147,7 +142,7 @@
 	radio_connection = null
 	update_icon()
 
-/obj/item/detpack/receive_signal(datum/signal/signal)
+/obj/item/explosive/plastique/detpack/receive_signal(datum/signal/signal)
 	if(!signal || !on)
 		return
 
@@ -173,7 +168,7 @@
 		sound_timer = addtimer(CALLBACK(src, PROC_REF(do_play_sound_loud)), 1 SECONDS, TIMER_LOOP|TIMER_STOPPABLE)
 	update_icon()
 
-/obj/item/detpack/Topic(href, href_list)
+/obj/item/explosive/plastique/detpack/Topic(href, href_list)
 	. = ..()
 	if(.)
 		return
@@ -200,7 +195,7 @@
 
 	updateUsrDialog()
 
-/obj/item/detpack/can_interact(mob/user)
+/obj/item/explosive/plastique/detpack/can_interact(mob/user)
 	. = ..()
 	if(!.)
 		return FALSE
@@ -211,7 +206,7 @@
 
 	return TRUE
 
-/obj/item/detpack/interact(mob/user)
+/obj/item/explosive/plastique/detpack/interact(mob/user)
 	. = ..()
 	if(.)
 		return
@@ -245,7 +240,7 @@
 	popup.set_content(dat)
 	popup.open()
 
-/obj/item/detpack/afterattack(atom/target, mob/user, flag)
+/obj/item/explosive/plastique/detpack/afterattack(atom/target, mob/user, flag)
 	if(!flag)
 		return FALSE
 	if(issignaler(target))
@@ -254,7 +249,7 @@
 		set_frequency(signaler.frequency)
 		to_chat(user, "You transfer the frequency and code of [signaler] to [src].")
 		return
-	if(istype(target, /obj/item) || istype(target, /mob))
+	if(istype(target, /obj/item))
 		return FALSE
 	if(target.resistance_flags & INDESTRUCTIBLE)
 		return FALSE
@@ -268,9 +263,6 @@
 		if(!W.damageable)
 			to_chat(user, "[span_warning("[W] is much too tough for you to do anything to it with [src]")].")
 			return FALSE
-	if((locate(/obj/item/detpack) in target) || (locate(/obj/item/explosive/plastique) in target)) //This needs a refactor.
-		to_chat(user, "[span_warning("There is already a device attached to [target]")].")
-		return FALSE
 
 	if(user.skills.getRating(SKILL_ENGINEER) < SKILL_ENGINEER_METAL)
 		user.visible_message(span_notice("[user] fumbles around figuring out how to use [src]."),
@@ -282,9 +274,6 @@
 	span_warning("You are trying to plant [name] on [target]!"))
 
 	if(do_after(user, 3 SECONDS, NONE, target, BUSY_ICON_HOSTILE))
-		if((locate(/obj/item/detpack) in target) || (locate(/obj/item/explosive/plastique) in target)) //This needs a refactor.
-			to_chat(user, "[span_warning("There is already a device attached to [target]")].")
-			return
 		user.drop_held_item()
 		playsound(src.loc, 'sound/weapons/mine_armed.ogg', 25, 1)
 		var/location
@@ -310,20 +299,20 @@
 			set_frequency(frequency)
 		update_icon()
 
-/obj/item/detpack/proc/change_to_loud_sound()
+/obj/item/explosive/plastique/detpack/proc/change_to_loud_sound()
 	if(sound_timer)
 		deltimer(sound_timer)
 		sound_timer = addtimer(CALLBACK(src, PROC_REF(do_play_sound_loud)), 1 SECONDS, TIMER_LOOP|TIMER_STOPPABLE)
 
-/obj/item/detpack/proc/do_play_sound_normal()
+/obj/item/explosive/plastique/detpack/proc/do_play_sound_normal()
 	timer--
 	playsound(loc, 'sound/weapons/mine_tripped.ogg', 50, FALSE)
 
-/obj/item/detpack/proc/do_play_sound_loud()
+/obj/item/explosive/plastique/detpack/proc/do_play_sound_loud()
 	timer--
 	playsound(loc, 'sound/weapons/mine_tripped.ogg', 160 + (timer-timer*2)*10, FALSE) //Gets louder as we count down to armaggedon
 
-/obj/item/detpack/proc/disarm(turn_off = TRUE)
+/obj/item/explosive/plastique/detpack/proc/disarm(turn_off = TRUE)
 	if(timer < DETPACK_TIMER_MIN) //reset to minimum 5 seconds; no 'cooking' with aborted detonations.
 		timer = DETPACK_TIMER_MIN
 	if(sound_timer)
@@ -337,7 +326,7 @@
 		on = FALSE
 	update_icon()
 
-/obj/item/detpack/proc/do_detonate()
+/obj/item/explosive/plastique/detpack/proc/do_detonate()
 	detonation_pending = null
 	if(plant_target == null || !plant_target.loc) //need a target to be attached to
 		if(timer < DETPACK_TIMER_MIN) //reset to minimum 5 seconds; no 'cooking' with aborted detonations.
@@ -367,5 +356,9 @@
 	plant_target.plastique_act()
 	qdel(src)
 
-/obj/item/detpack/attack(mob/M as mob, mob/user as mob, def_zone)
+/obj/item/explosive/plastique/detpack/attack(mob/M as mob, mob/user as mob, def_zone)
+	return
+
+/obj/item/explosive/plastique/detpack/attack_self(mob/user)
+	interact(user)
 	return
