@@ -89,6 +89,10 @@
 		"Style Line" = list(
 			/obj/item/clothing/suit/modular/style/leather_jacket = -1,
 			/obj/item/clothing/suit/modular/style/duster = -1,
+			/obj/item/clothing/suit/modular/style/Alpha_greatcoat = -1,
+			/obj/item/clothing/suit/modular/style/Delta_greatcoat = -1,
+			/obj/item/clothing/suit/modular/style/Bravo_greatcoat = -1,
+			/obj/item/clothing/suit/modular/style/Charlie_greatcoat = -1,
 			/obj/item/armor_module/module/style/light_armor = -1,
 			/obj/item/armor_module/module/style/medium_armor = -1,
 			/obj/item/armor_module/module/style/heavy_armor = -1,
