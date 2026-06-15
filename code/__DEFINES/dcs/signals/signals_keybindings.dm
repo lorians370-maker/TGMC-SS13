@@ -217,7 +217,7 @@
 #define COMSIG_XENOABILITY_ACIDCHARGE "xenoability_acidcharge"
 #define COMSIG_XENOABILITY_BULLHEADBUTT "xenoability_bullheadbutt"
 #define COMSIG_XENOABILITY_BULLGORE "xenoability_bullgore"
-#define COMSIG_XENOABILITY_TOLERATE "xenoability_bulltolerate"
+#define COMSIG_XENOABILITY_BULLTURRET "xenoability_bullturret"
 
 #define COMSIG_XENOABILITY_TAIL_SWEEP "xenoability_tail_sweep"
 #define COMSIG_XENOABILITY_FORWARD_CHARGE "xenoability_forward_charge"

@@ -63,5 +63,5 @@
 		/datum/action/ability/xeno_action/acid_charge,
 		/datum/action/ability/xeno_action/headbutt,
 		/datum/action/ability/xeno_action/gore,
-		/datum/action/ability/xeno_action/tolerate,
+		/datum/action/ability/xeno_action/bull_turret,
 	)

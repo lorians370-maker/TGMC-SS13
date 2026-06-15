@@ -206,36 +206,106 @@
 		COMSIG_LIVING_STATUS_STAGGER,))
 
 // ***************************************
-// *********** Tolerate
+// *********** Bull Turret Ability
 // ***************************************
-
-/datum/action/ability/xeno_action/tolerate
-	name = "Tolerate"
-	desc = "For the next few seconds, you will become resistant to slowdown, stagger and stuns."
-	action_icon_state = "bull_ready_charge"
-	action_icon = 'icons/Xeno/actions/bull.dmi'
-	use_state_flags = ABILITY_USE_STAGGERED
+/datum/action/ability/xeno_action/bull_turret
+	name = "Bull Turret"
+	desc = "Spawns a mobile sticky resin turret that follows you and fires sticky resin at nearby enemies."
+	action_icon = 'icons/Xeno/acid_turret.dmi'
+	action_icon_state = "resin_turret"
 	keybinding_signals = list(
-		KEYBINDING_NORMAL = COMSIG_XENOABILITY_TOLERATE,
+		KEYBINDING_NORMAL = COMSIG_XENOABILITY_BULLTURRET,
 	)
-	cooldown_duration = 60 SECONDS
-	ability_cost = 80
+	cooldown_duration = 5 SECONDS
+	ability_cost = 100
 
-/datum/action/ability/xeno_action/tolerate/action_activate()
-	addtimer(CALLBACK(src, PROC_REF(tolerate_deactivate)), 20 SECONDS, TIMER_UNIQUE|TIMER_STOPPABLE|TIMER_OVERRIDE)
-	xeno_owner.set_stagger(0)
-	xeno_owner.set_slowdown(0)
-	xeno_owner.add_filter("bull_tolerate_outline", 4, outline_filter(1, COLOR_RED))
-	ADD_TRAIT(xeno_owner, TRAIT_STAGGERIMMUNE, XENO_TRAIT)
-	ADD_TRAIT(xeno_owner, TRAIT_SLOWDOWNIMMUNE, XENO_TRAIT)
-	ADD_TRAIT(xeno_owner, TRAIT_STUNIMMUNE, XENO_TRAIT)
+	// Храним ссылку на турель прямо внутри этой способности
+	var/obj/structure/xeno/turret/sticky/bull/my_turret = null
+
+/datum/action/ability/xeno_action/bull_turret/action_activate()
+	if(!xeno_owner || !xeno_owner.loc)
+		return fail_activate()
+
+	// Быстрая проверка на существование турели
+	if(my_turret && !QDELETED(my_turret))
+		xeno_owner.visible_message(span_xenowarning("[xeno_owner]'s sticky turret is already deployed!"),
+			span_xenowarning("Your sticky turret is already deployed!"))
+		return fail_activate()
+
+	// Спавним новую турель
+	var/obj/structure/xeno/turret/sticky/bull/new_turret = new(xeno_owner.loc, xeno_owner.hivenumber)
+
+	my_turret = new_turret
+	new_turret.set_master(xeno_owner)
+
+	xeno_owner.visible_message(span_xenowarning("[xeno_owner] deploys a sticky turret!"),
+		span_xenowarning("You deploy a sticky turret!"))
 
 	succeed_activate()
 	add_cooldown()
 
-/datum/action/ability/xeno_action/tolerate/proc/tolerate_deactivate()
-	xeno_owner.remove_filter("bull_tolerate_outline")
-	REMOVE_TRAIT(xeno_owner, TRAIT_STAGGERIMMUNE, XENO_TRAIT)
-	REMOVE_TRAIT(xeno_owner, TRAIT_SLOWDOWNIMMUNE, XENO_TRAIT)
-	REMOVE_TRAIT(xeno_owner, TRAIT_STUNIMMUNE, XENO_TRAIT)
-	xeno_owner.update_icons()
+
+// ***************************************
+// *********** Bull Turret Object
+// ***************************************
+/obj/structure/xeno/turret/sticky/bull
+	name = "Bull Sticky Turret"
+	desc = "A sticky resin turret deployed by a Bull xenomorph. It fires sticky resin at enemies."
+	icon = 'icons/Xeno/acid_turret.dmi'
+	icon_state = "resin_turret"
+	density = FALSE
+	layer = MOB_LAYER + 0.1
+	pixel_y = 8 // Смещение спрайта турели
+	var/mob/living/carbon/xenomorph/master = null
+
+/obj/structure/xeno/turret/sticky/bull/proc/set_master(mob/living/carbon/xenomorph/M)
+	if(!M)
+		return
+	master = M
+
+	if(master.loc)
+		src.forceMove(master.loc)
+
+	// --- ИНИЦИАЛИЗАЦИЯ И АНИМАЦИЯ ПОЯВЛЕНИЯ ---
+	// 1. Задаем начальную точку: турель полностью прозрачная и сжата в 0
+	src.alpha = 0
+	var/matrix/M_start = matrix()
+	M_start.Scale(0, 0)
+	src.transform = M_start
+
+	// 2. Создаем целевую матрицу: уменьшенная до 70% турель
+	var/matrix/M_target = matrix()
+	M_target.Scale(0.7, 0.7)
+
+	// 3. Запускаем анимацию на 2 секунды
+	// Плавное появление (alpha = 255) и увеличение до целевой матрицы с эффектом плавного затухания скорости (EASE_OUT)
+	animate(src, transform = M_target, alpha = 255, time = 2 SECONDS, easing = EASE_OUT)
+	// ------------------------------------------
+
+	// Синхронизация движений через сигналы
+	RegisterSignal(master, COMSIG_MOVABLE_MOVED, PROC_REF(follow_master))
+	START_PROCESSING(SSobj, src)
+
+/obj/structure/xeno/turret/sticky/bull/proc/follow_master(datum/source, atom/old_loc, dir)
+	SIGNAL_HANDLER
+	if(!master || !master.loc || master.stat == DEAD)
+		qdel(src)
+		return
+
+	src.forceMove(master.loc)
+
+/obj/structure/xeno/turret/sticky/bull/process()
+	if(!master || !master.loc || master.stat == DEAD)
+		qdel(src)
+		return
+
+	if(src.loc != master.loc)
+		src.forceMove(master.loc)
+
+	. = ..()
+
+/obj/structure/xeno/turret/sticky/bull/Destroy()
+	if(master)
+		UnregisterSignal(master, COMSIG_MOVABLE_MOVED)
+	master = null
+	return ..()

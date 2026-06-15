@@ -280,12 +280,13 @@
 	keybind_signal = COMSIG_XENOABILITY_BULLGORE
 	hotkey_keys = list("R")
 
-/datum/keybinding/xeno/tolerate
-	name = "tolerate"
-	full_name = "Bull: Tolerate"
-	description = "Become resistant to slowdown, stagger and stuns"
-	keybind_signal = COMSIG_XENOABILITY_TOLERATE
+/datum/keybinding/xeno/bull_turret
+	name = "bull_turret"
+	full_name = "Bull: Turret"
+	description = "Spawns a mobile sticky resin turret"
+	keybind_signal = COMSIG_XENOABILITY_BULLTURRET
 	hotkey_keys = list("F")
+
 /datum/keybinding/xeno/throw_hugger
 	name = "throw_hugger"
 	full_name = "Carrier: Throw Hugger"
