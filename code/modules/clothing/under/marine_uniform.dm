@@ -16,6 +16,15 @@
 		"No Top" = "_r",
 	)
 
+/obj/item/clothing/under/marine/hyperscale
+	name = "\improper 8E Chameleon TGMC uniform"
+	desc = "A standard-issue, kevlar-weaved, hazmat-tested, EMF-augmented marine uniform BUT colorable with a facepaint! You suspect it's not as robust-proof as advertised."
+	icon_state = "hyperscale_marine_jumpsuit"
+	greyscale_colors = ARMOR_PALETTE_BLACK
+	greyscale_config = /datum/greyscale_config/marine_uniform
+	colorable_colors = ARMOR_PALETTES_LIST
+	colorable_allowed = ICON_STATE_VARIANTS_ALLOWED|PRESET_COLORS_ALLOWED
+
 /obj/item/clothing/under/marine/black_vest
 	starting_attachments = list(/obj/item/armor_module/storage/uniform/black_vest)
 
