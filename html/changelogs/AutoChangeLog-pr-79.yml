@@ -1,0 +1,5 @@
+author: "Pak2024"
+delete-after: True
+changes:
+  - balance: "Убрал возможность снарядам арты залетать в туман."
+  - bugfix: "Пофиксил некоторые участки карты на Research Outpost и Icy Caves где отсутствовала крыша у сило."
