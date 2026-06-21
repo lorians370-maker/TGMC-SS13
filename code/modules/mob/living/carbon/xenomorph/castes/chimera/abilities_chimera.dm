@@ -318,6 +318,12 @@
 	. = ..()
 	playsound(xeno_owner,'sound/effects/bamf.ogg', 75, TRUE)
 	new /obj/effect/temp_visual/shockwave(get_turf(xeno_owner), range)
+
+	var/list/L = orange(range, xeno_owner)
+	for(var/obj/machinery/deployable/mounted/sentry/sentry in L)
+		sentry.take_damage(warp_blast_damage, BRUTE, BOMB)
+		sentry.knock_down()
+
 	for(var/mob/living/living_target in cheap_get_humans_near(get_turf(xeno_owner), range))
 
 		if(living_target.stat == DEAD || living_target == xeno_owner || !line_of_sight(xeno_owner, living_target))
